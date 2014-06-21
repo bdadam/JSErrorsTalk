@@ -339,26 +339,75 @@
 				```
 			</section>
 
+			<section data-markdown>
+				## Was für Fehler können überhaupt auftreten?
+
+				### Erwartete (handled)
+				* Datenfehler (z.B. falscher Userinput)
+
+				### Unerwartete (unhandled)
+				* Programmfehler, Logikfehler
+				* Fehlende Ressource (z.B. Netzwerkproblem)
+			</section>
+
 			<section><h2>4. Error Logging</h2></section>
 			<section data-markdown>
-				```JavaScript
-				(function() {
-					function log(message, url, lineNumber) {
-						// the actual logging happens here
-					}
+				## Zwei Fragen:
 
-					if (window.addEventListener) { window.addEventListener('error', log); }
-					else if (window.attachEvent) { window.attachEvent('onerror', log); }
-					else {
-						var onError = window.onerror;
-						window.onerror = function() {
-							log.apply(arguments);
-							onError.apply(arguments);
-						};
-					}
-				}());
+				* was kann/soll man loggen?
+				* wie soll man loggen?
+			</section>
+			<section data-markdown>
+				```JavaScript
+				var onError = window.onerror;
+				window.onerror = function(message, url, lineNumber) {
+					// log error
+
+					// then call the other event handler if any
+					onError && onError.apply(window, arguments);
+				};
+
 				```
 			</section>
+			<section data-markdown>
+				## Vorteile:
+
+				* cross-browser
+				* einfach
+
+				## Nachteile:
+
+				* kein Zugriff auf dem aktuellen Error Objekt
+				* kein Stacktrace
+			</section>
+			<section data-markdown>
+				## Für neuere Browser
+
+				```JavaScript
+				window.addEventListener('error', function(errorEvent) {
+					console.log(errorEvent);
+					console.log(errorEvent.error);
+					console.log(errorEvent.lineno);
+				});
+				```
+			</section>
+			<section data-markdown>
+				## Vorteile:
+
+				* Zugriff auf dem Error Objekt
+				* Stacktrace
+
+				## Nachteile:
+
+				* nicht cross-browser (ab IE10)
+			</section>
+			<section data-markdown>
+				## Herausforderungen
+
+				* 
+
+			</section>
+			
 			<section><h2>Wie kann man den Fehler loggen?</h2></section>
 			<section data-markdown>
 				## Google Analytics
@@ -406,6 +455,9 @@
 			slideNumber: true,
 			mouseWheel: true,
 
+			width: 960,
+			height: 600,
+
 			theme: Reveal.getQueryHash().theme,
 			transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
 			dependencies: [
@@ -418,8 +470,8 @@
 			]
 		});
 
-		window.addEventListener('mousewheel', handleScroll);
-		window.addEventListener('DOMMouseScroll', handleScroll);
+		//window.addEventListener('mousewheel', handleScroll);
+		//window.addEventListener('DOMMouseScroll', handleScroll);
 
 		function handleScroll(e) {
 			e.preventDefault();
