@@ -30,43 +30,6 @@
 	</style>
 </head>
 <body>
-	<script>
-		/*(function() {
-			function log(message, url, lineNumber) {
-				console.log(message);
-				//console.error(message, url, lineNumber);
-			}
-
-			if (window.addEventListener) { window.addEventListener('error', log); }
-			else if (window.attachEvent) { window.attachEvent('onerror', log); }
-			else {
-				var onError = window.onerror;
-				window.onerror = function() {
-					log.apply(this, arguments);
-					onError.apply(this, arguments);
-				};
-			}
-		}());
-		//throw new TypeError("sdfsdf");
-
-		var T = function(message){
-			this.name = 'T';
-			this.message = message;
-			//Error.apply(this, arguments);
-		};
-
-		T.prototype = new Error();
-		T.constructor = T;
-
-		//console.log('xxxx');
-		throw new T("1");
-		try {
-			throw new T("fsfsf");
-		} catch(ex) {
-			//console.error(ex);
-		}
-		*/
-	</script>
 	<div class="reveal">
 		<div class="slides">
 			<section>
@@ -143,6 +106,25 @@
 			<section data-markdown>
 				## Finally always wins! /2
 
+				```JavaScript
+				function trueOrFalse() {
+					try {
+						throw new Error('An error occured.');
+					}
+					catch(ex) {
+						return false;
+					}
+					finally {
+						return true;
+					}
+				}
+
+				console.log(trueOrFalse()); // true
+				```
+			</section>
+			<section data-markdown>
+				## Finally always wins! /3
+
 				Der Code in `finally` Block läuft auch wenn:
 
 				* `return` in `try` Block
@@ -189,7 +171,7 @@
 				```
 			</section>
 			<section data-markdown>
-				## Stack (ausser Internet Explorer)
+				## Stacktrace (Error.stack)
 
 				```
 				Error: Something bad happened.
@@ -296,8 +278,8 @@
 				eine callback Funktion
 
 				```JavaScript
-				fs.readFile('data.txt', function(error, result) {
-					if (error) {
+				fs.readFile('data.txt', function(errorOrNull, result) {
+					if (errorOrNull) {
 						// error handling
 					}
 				});
@@ -342,21 +324,13 @@
 			<section data-markdown>
 				## Was für Fehler können überhaupt auftreten?
 
-				### Erwartete (handled)
-				* Datenfehler (z.B. falscher Userinput)
+				- Handled exceptions: wir sind vorbereitet, dass der Code Exceptions werfen kann (TypeError, RangeError, falscher Userinput usw.).
 
-				### Unerwartete (unhandled)
-				* Programmfehler, Logikfehler
-				* Fehlende Ressource (z.B. Netzwerkproblem)
+				- Aber was passiert mit unerwarteten Fehlern? Wie z.B.: Programmfehler, Logikfehler oder fehlende Ressource (z.B. Netzwerkproblem)
 			</section>
 
 			<section><h2>4. Error Logging</h2></section>
-			<section data-markdown>
-				## Zwei Fragen:
-
-				* was kann/soll man loggen?
-				* wie soll man loggen?
-			</section>
+			<section><h2>Wie sollte man unhandled Exceptions loggen?</h2></section>
 			<section data-markdown>
 				```JavaScript
 				var onError = window.onerror;
@@ -366,19 +340,16 @@
 					// then call the other event handler if any
 					onError && onError.apply(window, arguments);
 				};
-
 				```
 			</section>
 			<section data-markdown>
-				## Vorteile:
-
-				* cross-browser
-				* einfach
-
-				## Nachteile:
-
-				* kein Zugriff auf dem aktuellen Error Objekt
-				* kein Stacktrace
+				- ## Vorteile
+				- cross-browser
+				- einfach
+				
+				- ## Nachteile
+				- kein Zugriff auf dem aktuellen Error Objekt
+				- kein Stacktrace
 			</section>
 			<section data-markdown>
 				## Für neuere Browser
@@ -387,58 +358,106 @@
 				window.addEventListener('error', function(errorEvent) {
 					console.log(errorEvent);
 					console.log(errorEvent.error);
+					console.log(errorEvent.error.message);
+					console.log(errorEvent.error.stack);
 					console.log(errorEvent.lineno);
 				});
 				```
 			</section>
 			<section data-markdown>
-				## Vorteile:
+				- **Vorteile**
 
-				* Zugriff auf dem Error Objekt
-				* Stacktrace
+				- Zugriff auf dem Error Objekt
+				
+				- Stacktrace
+
+				- **Nachteile**
+
+				- nicht cross-browser (ab IE10)
+			</section>
+			<section><h2>Was kann man loggen?</h2></section>
+			<section data-markdown>
+				## Was kann man loggen?
+
+				* ein Fehler ist aufgetreten (unhandled exception)
+				* auf welcher Seite
+				* wo (Skript-URL, Zeile, domain: extern/intern)
+				* Browser, OS (User Agent)
+				* Client IP
+			</section>
+			<section data-markdown>
+				## Wie kann man die Fehler loggen?
+			</section>
+			<section data-markdown>
+				## Google Analytics oder anderes Tracking Tool
+
+				```JavaScript
+				window.onerror = function(message, url, lineNumber) {
+					_gaq.push([
+						'_trackEvent',
+						'JavaScript Error',
+						message,
+						url.indexOf('example.com/') > 0 ? 'internal' : 'external',
+						true
+					]);
+				};
+				```
+			</section>
+			<section data-markdown>
+				**Vorteile**
+
+				- Nur clientseitig
+
+				- Alerts sind einfach einzurichten
+
+				**Nachteile**
+
+				* Daten sind begrenzt (paar 100 Zeichen, je nach Tool)
+			</section>
+			<section data-markdown>
+				## Access log
+
+				```JavaScript
+				window.onerror = function(message, url, lineNumber) {
+					var data = {
+						msg: message,
+						url: url,
+						internal: (url.indexOf('example.com/') > 0)
+					};
+
+					new Image().src = '/path/to/logger?data=' + JSON.stringify(data);
+				};
+				```
+			</section>
+			<section data-markdown>
+				## Vorteile von Access Log
+
+				* Monitoring ist einfach (z.B. Splunk)
+				* Begrenzung erst bei 2k oder 8k Zeichen (max. URL Länge)
 
 				## Nachteile:
 
-				* nicht cross-browser (ab IE10)
+				* man braucht Monitoring für Alerting (serverseitig)
 			</section>
 			<section data-markdown>
 				## Herausforderungen
 
-				* 
-
-			</section>
-			
-			<section><h2>Wie kann man den Fehler loggen?</h2></section>
-			<section data-markdown>
-				## Google Analytics
-
-				```JavaScript
-				function log(message, url, lineNumber) {
-					
-				}
-				```
+				* Browserunterschiede (Sprache im IE)
+				* Wie trennt man die wichtigen Log-Einträge von den unwichtigen?
+				* Browser Extensions können auch Exceptions werfen (und sie fliessen in die Logs rein)
+				* Sind die konkrete Fehler interessant, oder eher die Anzahl von Ereignissen?
 			</section>
 			<section data-markdown>
-				## Ajax-Request
+				## Deswegen empfehle ich einen für diesen Zweck dedizierten Service zu verwenden
 
-				```JavaScript
-				function log(message, url, lineNumber) {
-					$.ajax(...)
-					// oder
-					var xmlhttp=new XMLHttpRequest();
-					xmlhttp.open('GET', '/url/to/error/logger', true);
-					xmlhttp.send();
-				}
-				```
+				Die haben schon die Expertise, diese Herausforderungen zu bekämpfen.
 			</section>
 			<section data-markdown>
-				## Image Request
+				## Zusammenfassung
 
-				```JavaScript
-				function log(message, url, lineNumber) {
-					new Image('/url/to/error/logger');
-				}
-				```
+				- Wir haben gesehen, wie man Fehler in JavaScript behandelt
+				- Wie man für Fehlerfälle sich vorbereiten kann
+				- Was man tun kann, um unerwartete Fehler auch mitzubekommen
 			</section>
 		</div>
 	</div>
