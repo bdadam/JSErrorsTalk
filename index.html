@@ -1,504 +1,528 @@
 <!doctype html>
 <html lang="de">
 <head>
-	<meta charset="utf-8">
-	<title>Unterschiedliche Error-Typen in JavaScript</title>
-	<meta name="description" content="">
-	<meta name="author" content="Adam Beres-Deak">
-	
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<link rel="stylesheet" href="css/reveal.min.css">
-	<link rel="stylesheet" href="css/theme/beige.css">
-	<link rel="stylesheet" href="lib/css/zenburn.css">
-	<!-- If the query includes 'print-pdf', include the PDF print sheet -->
-	<script>
-		if( window.location.search.match( /print-pdf/gi ) ) {
-			var link = document.createElement( 'link' );
-			link.rel = 'stylesheet';
-			link.href = 'css/print/pdf.css';
-			document.getElementsByTagName( 'head' )[0].appendChild( link );
-		}
-	</script>
-	<!--[if lt IE 9]><script src="lib/js/html5shiv.js"></script><![endif]-->
-	<style>
-		h1 { font-size: 60px !important; }
-		/*.reveal .slides > section, .reveal .slides > section > section { padding: 0; };*/
-		h2.noTextTransform { text-transform: none !important; }
-		code, pre { text-transform: none !important; }
-	</style>
+    <meta charset="utf-8">
+    <title>Unterschiedliche Error-Typen in JavaScript</title>
+    <meta name="description" content="">
+    <meta name="author" content="Adam Beres-Deak">
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/beige.css">
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+    <script>
+        if( window.location.search.match( /print-pdf/gi ) ) {
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.href = 'css/print/pdf.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        }
+    </script>
+    <!--[if lt IE 9]><script src="lib/js/html5shiv.js"></script><![endif]-->
+    <style>
+        h1 { font-size: 60px !important; }
+        h2.noTextTransform { text-transform: none !important; }
+        code, pre { text-transform: none !important; }
+        .reveal tbody tr td { border-top: 2px solid #999; padding: 12px 0; }
+    </style>
 </head>
 <body>
-	<div class="reveal">
-		<div class="slides">
-			<section>
-				<h1>Unterschiedliche Error-Typen in JavaScript</h1>
-				<p>
-					<a target="_blank" href="http://bdadam.com">Adam Beres-Deak</a> /
-					<a target="_blank" href="http://bdadam.com">bdadam.com</a> /
-					<a target="_blank" href="http://twitter.com/bdadamm">@bdadamm</a>
-				</p>
-			</section>
-			<section>
-				Über mich
-			</section>
-			<section data-markdown>
-				## Agenda
+    <div class="reveal">
+        <div class="slides">
+            <section>
+                <h1>Unterschiedliche Error-Typen in JavaScript</h1>
+                <p>
+                    <a target="_blank" href="http://bdadam.com">Adam Beres-Deak</a> /
+                    <a target="_blank" href="http://bdadam.com">bdadam.com</a> /
+                    <a target="_blank" href="http://twitter.com/bdadamm">@bdadamm</a>
+                </p>
+            </section>
+            <section>
+                <h1>Adam Beres-Deak</h1>
+                <p><a target="_blank" href="http://bdadam.com">bdadam.com</a> / <a target="_blank" href="http://twitter.com/bdadamm">@bdadamm</a></p>
+                <hr/>
+                <ul>
+                    <li>ich entwickle am Liebsten in JavaScript</li>
+                    <li>außer JS arbeite ich mit ASP.Net/C#, Python</li>
+                    <li>ich arbeite bei <a href="http://werkstatt.autoscout24.de/">AutoScout24 (Werkstattportal)</a></li>
+                </ul>
+            </section>
+            <section data-markdown>
+                ## Agenda
 
-				1. Fehlerbehandlung in JavaScript
-				2. Eingebaute und benutzerdefinierte Error-Typen
-				3. Fehlerbehandlung in asynchron Funktionen
-				4. Fehlerlogging
-			</section>
+                - **Erwartete Fehler**
+                    - Fehlerbehandlung in JavaScript
+                    - Fehlerbehandlung in asynchron Funktionen
+                    - Eingebaute und benutzerdefinierte Error-Typen
+                - **Unerwartete Fehler**
+                    - Logging
+                    - Tools
+            </section>
+            <section data-markdown>
+                ##
+            </section>
 
-			<section data-markdown>
-				## 1. try/catch/finally/throw
+            <section data-markdown>
+                ## 1. try/catch/finally/throw
 
-				```JavaScript
-				try {
-					throw new Error('Something bad happened.');
-				}
-				catch(ex) {
-					console.log(ex.name); // Error
-					console.log(ex.message); // Something bad happened.
-					console.log(ex.stack); // Error: Something bad happened.    at ...
-				}
-				finally {
-					console.log('Finally always wins.');
-				}
+                ```JavaScript
+                try {
+                    throw new Error('Something bad happened.');
+                }
+                catch(ex) {
+                    console.log(ex.name); // Error
+                    console.log(ex.message); // Something bad happened.
+                    console.log(ex.stack); // Error: Something bad happened.    at ...
+                }
+                finally {
+                    console.log('Finally always wins.');
+                }
+                ```
+            </section>
+            <section data-markdown>
+                ## 3 mögliche Formen:
+                * try - catch
+                * try - finally
+                * try - catch - finally
+            </section>
+            <section data-markdown>
+                ## Das `throw` Statement
 
-				```
-			</section>
-			<section data-markdown>
-				## 3 mögliche Formen:
-				* try - catch
-				* try - finally
-				* try - catch - finally
-			</section>
-			<section data-markdown>
-				## Das `throw` Statement
+                * Es wirft eine Exception
+                * Die Ausführung der aktuellen Funktion wird beendet,
+                * und springt zum nächsten `catch` Block.
+                * Falls es kein `catch` gibt, das Program wird beendet.
+            </section>
+            <section data-markdown>
+                ## Was gibt diese Funktion zurück?
 
-				* Es wirft eine Exception
-				* Die Ausführung der aktuellen Funktion wird beendet,
-				* und springt zum nächsten `catch` Block.
-				* Falls es kein `catch` gibt, das Program wird beendet.
-			</section>
-			<section data-markdown>
-				## Finally always wins!
+                ```JavaScript
+                function trueOrFalse() {
+                    try {
+                        throw new Error('An error occured.');
+                    }
+                    catch(ex) {
+                        return false;
+                    }
+                    finally {
+                        return true;
+                    }
+                }
 
-				```JavaScript
-				function trueOrFalse() {
-					try {
-						throw new Error('An error occured.');
-					}
-					catch(ex) {
-						return false;
-					}
-					finally {
-						return true;
-					}
-				}
+                console.log(trueOrFalse()); // ????
+                ```
+            </section>
+            <section data-markdown>
+                ## Finally always wins!
 
-				console.log(trueOrFalse()); // ????
-				```
-			</section>
-			<section data-markdown>
-				## Finally always wins! /2
+                ```JavaScript
+                function trueOrFalse() {
+                    try {
+                        throw new Error('An error occured.');
+                    }
+                    catch(ex) {
+                        return false;
+                    }
+                    finally {
+                        return true;
+                    }
+                }
 
-				```JavaScript
-				function trueOrFalse() {
-					try {
-						throw new Error('An error occured.');
-					}
-					catch(ex) {
-						return false;
-					}
-					finally {
-						return true;
-					}
-				}
+                console.log(trueOrFalse()); // true
+                ```
 
-				console.log(trueOrFalse()); // true
-				```
-			</section>
-			<section data-markdown>
-				## Finally always wins! /3
+                Note: warum gibt es finally überhaupt?
+            </section>
+            <section data-markdown>
+                ## Finally always wins!
 
-				Der Code in `finally` Block läuft auch wenn:
+                Der Code in `finally` Block läuft auch wenn:
 
-				* `return` in `try` Block
-				* Code in `catch` Block wirft eine Exception
-				* kein `catch` Block
-			</section>
+                * `return` in `try` Block
+                * Code in `catch` Block wirft eine Exception
+                * kein `catch` Block
+            </section>
 
-			<section data-markdown>
-				## 2. Eingebaute und benutzerdefinierte Error-Typen
-			</section>
-			<section data-markdown>
-				## Natives Error Objekt
+            <section data-markdown>
+                ## 2. Eingebaute und benutzerdefinierte Error-Typen
+            </section>
+            <section data-markdown>
+                ## Natives Error Objekt
 
-				```JavaScript
-				throw new Error('Error message');
-				```
-			</section>
-			<section data-markdown>
-				## Exceptions sind Freunde nicht Feinde
+                ```JavaScript
+                throw new Error('Error message');
+                ```
+            </section>
+            <section data-markdown>
+                ## Exceptions sind Freunde nicht Feinde
 
-				* Exceptions erzählen was passiert ist
-				* Wo ist es schief gelaufen
-				* Sie helfen beim Debuggen
-			</section>
-			<section data-markdown>
-				## Man sollte sinnvolle und sprechende Exceptions werfen
+                * Exceptions erzählen was passiert ist
+                * Wo ist es schief gelaufen
+                * Sie helfen beim Debuggen
+            </section>
+            <section data-markdown>
+                ## Man sollte sinnvolle und sprechende Exceptions werfen
 
-				zumindest das `message` Property einer Ausnahme setzen
-			</section>
-			<section data-markdown>
-				```JavaScript
-				function throwsAnException() {
-					throw new Error('Something bad happened.');
-				}
+                zumindest das `message` Property einer Ausnahme setzen
+            </section>
+            <section data-markdown>
+                ```JavaScript
+                function throwsAnException() {
+                    throw new Error('Something bad happened.');
+                }
 
-				try {
-					throwsAnException();
-				}
-				catch(ex) {
-					console.log(error.name); // Error
-					console.log(error.message); // Something bad happened.
-					console.log(ex.stack);
-				}
-				```
-			</section>
-			<section data-markdown>
-				## Stacktrace (Error.stack)
+                try {
+                    throwsAnException();
+                }
+                catch(ex) {
+                    console.log(error.name); // Error
+                    console.log(error.message); // Something bad happened.
+                    console.log(ex.stack);
+                }
+                ```
+            </section>
+            <section data-markdown>
+                ## Stacktrace (Error.stack)
 
-				```
-				Error: Something bad happened.
-				    at throwsAnException (http://127.0.0.1:3000/:184:12)
-				    at http://127.0.0.1:3000/:188:6
-				    at http://127.0.0.1:3000/:193:5 (index):191
-				```
-			</section>
-			<section data-markdown>
-				## Was kann man noch besser machen?
-			</section>
-			<section>
-				<section><h2>Einen von den nativen Error Typen verwenden</h2></section>
-				<section><h2>Welche sind diese?</h2></section>
-				<section><h2 class="noTextTransform">Error</h2></section>
-				<section><h2 class="noTextTransform">TypeError</h2></section>
-				<section><h2 class="noTextTransform">EvalError</h2></section>
-				<section><h2 class="noTextTransform">URIError</h2></section>
-				<section><h2 class="noTextTransform">SyntaxError</h2></section>
-				<section><h2 class="noTextTransform">RangeError</h2></section>
-				<section><h2 class="noTextTransform">ReferenceError</h2></section>
-			</section>
-			<section><h2>Benutzerdefinierte Error Types</h2></section>
-			<section data-markdown>
-				```JavaScript
-				function MyError(message) {
-					this.message = message;
-					this.stack = (new Error()).stack;
-				}
+                ```
+                Error: Something bad happened.
+                    at throwsAnException (http://127.0.0.1:3000/:184:12)
+                    at http://127.0.0.1:3000/:188:6
+                    at http://127.0.0.1:3000/:193:5 (index):191
+                ```
+            </section>
+            <section data-markdown>
+                ## Was kann man noch besser machen?
+            </section>
+            <section>
+                <section><h2>Einen von den nativen Error Typen verwenden</h2></section>
+                <section><h2>Welche sind diese?</h2></section>
+                <section><h2 class="noTextTransform">Error</h2></section>
+                <section><h2 class="noTextTransform">TypeError</h2></section>
+                <section><h2 class="noTextTransform">EvalError</h2></section>
+                <section><h2 class="noTextTransform">URIError</h2></section>
+                <section><h2 class="noTextTransform">SyntaxError</h2></section>
+                <section><h2 class="noTextTransform">RangeError</h2></section>
+                <section><h2 class="noTextTransform">ReferenceError</h2></section>
+            </section>
+            <section><h2>Benutzerdefinierte Error Types</h2></section>
+            <section data-markdown>
+                ```JavaScript
+                function MyError(message) {
+                    this.message = message;
+                    this.stack = (new Error()).stack;
+                }
 
-				MyError.prototype = new Error();
-				MyError.constructor = MyError;
-				MyError.prototype.name = 'MyError';
+                MyError.prototype = new Error();
+                MyError.constructor = MyError;
+                MyError.prototype.name = 'MyError';
 
-				try {
-					throw new MyError('Error message.');
-				} catch(ex) {
-					console.log(ex instanceof Error); // true
-					console.log(ex instanceof MyError); // true
-				}
-				```
-			</section>
-			<section data-markdown>
-				## Unterschiedliche Behandlung je nach Error Typ
+                try {
+                    throw new MyError('Error message.');
+                } catch(ex) {
+                    console.log(ex instanceof Error); // true
+                    console.log(ex instanceof MyError); // true
+                }
+                ```
+            </section>
+            <section data-markdown>
+                ## Unterschiedliche Behandlung je nach Error Typ
 
-				z.B. in C#:
+                z.B. in C#:
 
-				```c#
-				try {...}
-				catch (ArgumentException ex) { ... }
-				catch (FileNotFoundException ex) { ... }
-				```
-			</section>
-			<section data-markdown>
-				## Der Standard Weg
+                ```c#
+                try {...}
+                catch (ArgumentException ex) { ... }
+                catch (FileNotFoundException ex) { ... }
+                ```
+            </section>
+            <section data-markdown>
+                ## Der Standard Weg
 
-				```JavaScript
-				try { ... }
-				catch(ex) {
-					if (ex instanceof URIError) { ... }
-					else if (ex instanceof TypeError) { ... }
-					else if (ex instanceof MyCustomError) { ... }
-				}
-				```
-			</section>
-			<section data-markdown>
-				## Der Firefox Weg
+                ```JavaScript
+                try { ... }
+                catch(ex) {
+                    if (ex instanceof URIError) { ... }
+                    else if (ex instanceof TypeError) { ... }
+                    else if (ex instanceof MyCustomError) { ... }
+                }
+                ```
+            </section>
+            <section data-markdown>
+                ## Der Firefox Weg
 
-				```JavaScript
-				try {
-					myroutine(); // may throw some exceptions
-				}
-				catch (e if e instanceof TypeError) { ... }
-				catch (e if e instanceof RangeError) { ... }
-				catch (e) {
-					logMyErrors(e); // pass exception object to error handler
-				}
-				```
+                ```JavaScript
+                try {
+                    myroutine(); // may throw some exceptions
+                }
+                catch (e if e instanceof TypeError) { ... }
+                catch (e if e instanceof RangeError) { ... }
+                catch (e) {
+                    logMyErrors(e); // pass exception object to error handler
+                }
+                ```
 
-				[mehr Infos auf MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch)
-			</section>
+                [mehr Infos auf MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch)
+            </section>
 
-			<section><h2>3. Fehlerbehandlung in asynchron Funktionen</h2></section>
-			<section data-markdown>
-				## Mit callback Funktionen
+            <section><h2>3. Fehlerbehandlung in asynchron Funktionen</h2></section>
+            <section data-markdown>
+                ## Mit callback Funktionen
 
-				```JavaScript
-				function doSomethingAsync(onSuccess, onError) {
-					$.ajax(url, {
-						success: onSuccess,
-						error: onError
-					});
-				}
+                ```JavaScript
+                function doSomethingAsync(onSuccess, onError) {
+                    $.ajax(url, {
+                        success: onSuccess,
+                        error: onError
+                    });
+                }
 
-				doSomethingAsync(
-					function() { console.log('success'); },
-					function() { console.log('error'); }
-				);
-				```
-			</section>
-			<section data-markdown>
-				## Wie in Node.js
+                doSomethingAsync(
+                    function() { console.log('success'); },
+                    function() { console.log('error'); }
+                );
+                ```
+            </section>
+            <section data-markdown>
+                ## Wie in Node.js
 
-				eine callback Funktion
+                eine callback Funktion
 
-				```JavaScript
-				fs.readFile('data.txt', function(errorOrNull, result) {
-					if (errorOrNull) {
-						// error handling
-					}
-				});
-				```
-			</section>
-			<section data-markdown>
-				## Wie in Node.js /2
+                ```JavaScript
+                fs.readFile('data.txt', function(errorOrNull, result) {
+                    if (errorOrNull) {
+                        // error handling
+                    }
+                });
+                ```
+            </section>
+            <section data-markdown>
+                ## Wie in Node.js /2
 
-				```JavaScript
-				function doSomethingAsync(callback) {
-					$.ajax(url, {
-						success: function(data) { callback(null, data); },
-						error: function() { callback(new Error('Network error.')); }
-					});
-				}
-				```
-			</section>
-			<section data-markdown>
-				## Promises
-				
-				```JavaScript
-				doSomethingAsync()
-					.then(onFulfilled, onRejected)
-					.catch(function() { ... });
-				```
-			</section>
-			<section data-markdown>
-				## Promises /2
+                ```JavaScript
+                function doSomethingAsync(callback) {
+                    $.ajax(url, {
+                        success: function(data) { callback(null, data); },
+                        error: function() { callback(new Error('Network error.')); }
+                    });
+                }
+                ```
+            </section>
+            <section data-markdown>
+                ## Promises
 
-				```JavaScript
-				function doSomethingAsync() {
-					return new Promise(function(resolve, reject) {
-						$.ajax(url, {
-							success: function(data) { resolve(data); },
-							error: function() { reject(new Error('Network error')); }
-						});
-					});
-				}
-				```
-			</section>
+                ```JavaScript
+                doSomethingAsync()
+                    .then(onFulfilled, onRejected)
+                    .catch(function() { ... });
+                ```
+            </section>
+            <section data-markdown>
+                ## Promises /2
 
-			<section data-markdown>
-				## Was für Fehler können überhaupt auftreten?
+                ```JavaScript
+                function doSomethingAsync() {
+                    return new Promise(function(resolve, reject) {
+                        $.ajax(url, {
+                            success: function(data) { resolve(data); },
+                            error: function() { reject(new Error('Network error')); }
+                        });
+                    });
+                }
+                ```
+            </section>
 
-				- Handled exceptions: wir sind vorbereitet, dass der Code Exceptions werfen kann (TypeError, RangeError, falscher Userinput usw.).
+            <section data-markdown>
+                ## Was für Fehler können überhaupt auftreten?
 
-				- Aber was passiert mit unerwarteten Fehlern? Wie z.B.: Programmfehler, Logikfehler oder fehlende Ressource (z.B. Netzwerkproblem)
-			</section>
+                - Handled exceptions: wir sind vorbereitet, dass der Code Exceptions werfen kann (TypeError, RangeError, falscher Userinput usw.).
 
-			<section><h2>4. Error Logging</h2></section>
-			<section><h2>Wie sollte man unhandled Exceptions loggen?</h2></section>
-			<section data-markdown>
-				```JavaScript
-				var onError = window.onerror;
-				window.onerror = function(message, url, lineNumber) {
-					// log error
+                - Aber was passiert mit unerwarteten Fehlern? Wie z.B.: Programmfehler, Logikfehler oder fehlende Ressource (z.B. Netzwerkproblem)
+            </section>
 
-					// then call the other event handler if any
-					onError && onError.apply(window, arguments);
-				};
-				```
-			</section>
-			<section data-markdown>
-				- ## Vorteile
-				- cross-browser
-				- einfach
-				
-				- ## Nachteile
-				- kein Zugriff auf dem aktuellen Error Objekt
-				- kein Stacktrace
-			</section>
-			<section data-markdown>
-				## Für neuere Browser
+            <section><h2>4. Error Logging</h2></section>
+            <section><h2>Wie sollte man unhandled Exceptions loggen?</h2></section>
+            <section data-markdown>
+                ```JavaScript
+                var onError = window.onerror;
+                window.onerror = function(message, url, lineNumber) {
+                    // log error
 
-				```JavaScript
-				window.addEventListener('error', function(errorEvent) {
-					console.log(errorEvent);
-					console.log(errorEvent.error);
-					console.log(errorEvent.error.message);
-					console.log(errorEvent.error.stack);
-					console.log(errorEvent.lineno);
-				});
-				```
-			</section>
-			<section data-markdown>
-				- **Vorteile**
+                    // then call the other event handler if any
+                    onError && onError.apply(window, arguments);
+                };
+                ```
+            </section>
+            <section data-markdown>
+                - ## Vorteile
+                - cross-browser
+                - einfach
 
-				- Zugriff auf dem Error Objekt
-				
-				- Stacktrace
+                - ## Nachteile
+                - kein Zugriff auf dem aktuellen Error Objekt
+                - kein Stacktrace
+            </section>
+            <section data-markdown>
+                ## Für neuere Browser
 
-				- **Nachteile**
+                ```JavaScript
+                window.addEventListener('error', function(errorEvent) {
+                    console.log(errorEvent);
+                    console.log(errorEvent.error);
+                    console.log(errorEvent.error.message);
+                    console.log(errorEvent.error.stack);
+                    console.log(errorEvent.lineno);
+                });
+                ```
+            </section>
+            <section data-markdown>
+                - **Vorteile**
 
-				- nicht cross-browser (ab IE10)
-			</section>
-			<section><h2>Was kann man loggen?</h2></section>
-			<section data-markdown>
-				## Was kann man loggen?
+                - Zugriff auf dem Error Objekt
 
-				* ein Fehler ist aufgetreten (unhandled exception)
-				* auf welcher Seite
-				* wo (Skript-URL, Zeile, domain: extern/intern)
-				* Browser, OS (User Agent)
-				* Client IP
-			</section>
-			<section data-markdown>
-				## Wie kann man die Fehler loggen?
-			</section>
-			<section data-markdown>
-				## Google Analytics oder anderes Tracking Tool
+                - Stacktrace
 
-				```JavaScript
-				window.onerror = function(message, url, lineNumber) {
-					_gaq.push([
-						'_trackEvent',
-						'JavaScript Error',
-						message,
-						url.indexOf('example.com/') > 0 ? 'internal' : 'external',
-						true
-					]);
-				};
-				```
-			</section>
-			<section data-markdown>
-				**Vorteile**
+                - **Nachteile**
 
-				- Nur clientseitig
+                - nicht cross-browser (ab IE10)
+            </section>
+            <section><h2>Was kann man loggen?</h2></section>
+            <section data-markdown>
+                ## Was kann man loggen?
 
-				- Alerts sind einfach einzurichten
+                * ein Fehler ist aufgetreten (unhandled exception)
+                * auf welcher Seite
+                * wo (Skript-URL, Zeile, domain: extern/intern)
+                * Browser, OS (User Agent)
+                * Client IP
+            </section>
+            <section data-markdown>
+                ## Wie kann man die Fehler loggen?
+            </section>
+            <section data-markdown>
+                ## Google Analytics oder anderes Tracking Tool
 
-				**Nachteile**
+                ```JavaScript
+                window.onerror = function(message, url, lineNumber) {
+                    _gaq.push([
+                        '_trackEvent',
+                        'JavaScript Error',
+                        message,
+                        url.indexOf('example.com/') > 0 ? 'internal' : 'external',
+                        true
+                    ]);
+                };
+                ```
+            </section>
+            <section data-markdown>
+                **Vorteile**
 
-				* Daten sind begrenzt (paar 100 Zeichen, je nach Tool)
-			</section>
-			<section data-markdown>
-				## Access log
+                - Nur clientseitig
 
-				```JavaScript
-				window.onerror = function(message, url, lineNumber) {
-					var data = {
-						msg: message,
-						url: url,
-						internal: (url.indexOf('example.com/') > 0)
-					};
+                - Alerts sind einfach einzurichten
 
-					new Image().src = '/path/to/logger?data=' + JSON.stringify(data);
-				};
-				```
-			</section>
-			<section data-markdown>
-				## Vorteile von Access Log
+                **Nachteile**
 
-				* Monitoring ist einfach (z.B. Splunk)
-				* Begrenzung erst bei 2k oder 8k Zeichen (max. URL Länge)
+                * Daten sind begrenzt (paar 100 Zeichen, je nach Tool)
+            </section>
+            <section data-markdown>
+                ## Access log
 
-				## Nachteile:
+                ```JavaScript
+                window.onerror = function(message, url, lineNumber) {
+                    var data = {
+                        msg: message,
+                        url: url,
+                        internal: (url.indexOf('example.com/') > 0)
+                    };
 
-				* man braucht Monitoring für Alerting (serverseitig)
-			</section>
-			<section data-markdown>
-				## Herausforderungen
+                    new Image().src = '/path/to/logger?data=' + JSON.stringify(data);
+                };
+                ```
+            </section>
+            <section data-markdown>
+                Vorteile|Nachteile
+                ---|---
+                Monitoring ist einfach (z.B. Splunk) | man braucht Monitoring für Alerting (serverseitig)
+                Begrenzung erst bei 2k oder 8k Zeichen (max. URL Länge) |
+            </section>
+            <section>
+                <table>
+                    <thead><tr><th>Vorteile</th><th>Nachteile</th></tr></thead>
+                    <tr></tr>
+                </table>
+                ## Vorteile von Access Log
 
-				* Browserunterschiede (Sprache im IE)
-				* Wie trennt man die wichtigen Log-Einträge von den unwichtigen?
-				* Browser Extensions können auch Exceptions werfen (und sie fliessen in die Logs rein)
-				* Sind die konkrete Fehler interessant, oder eher die Anzahl von Ereignissen?
-			</section>
-			<section data-markdown>
-				## Deswegen empfehle ich einen für diesen Zweck dedizierten Service zu verwenden
+                * Monitoring ist einfach (z.B. Splunk)
+                * Begrenzung erst bei 2k oder 8k Zeichen (max. URL Länge)
 
-				Die haben schon die Expertise, diese Herausforderungen zu bekämpfen.
-			</section>
-			<section data-markdown>
-				## Zusammenfassung
+                ## Nachteile:
 
-				- Wir haben gesehen, wie man Fehler in JavaScript behandelt
-				- Wie man für Fehlerfälle sich vorbereiten kann
-				- Was man tun kann, um unerwartete Fehler auch mitzubekommen
-			</section>
-		</div>
-	</div>
-	<script src="lib/js/head.min.js"></script>
-	<script src="js/reveal.min.js"></script>
-	<script>
-		// Full list of configuration options available here:
-		// https://github.com/hakimel/reveal.js#configuration
-		Reveal.initialize({
-			controls: true,
-			progress: true,
-			history: true,
-			center: true,
-			slideNumber: true,
-			mouseWheel: true,
+                * man braucht Monitoring für Alerting (serverseitig)
+            </section>
+            <section data-markdown>
+                ## Herausforderungen
 
-			width: 960,
-			height: 600,
+                * Browserunterschiede (Sprache im IE)
+                * Wie trennt man die wichtigen Log-Einträge von den unwichtigen?
+                * Browser Extensions können auch Exceptions werfen (und sie fliessen in die Logs rein)
+                * Sind die konkrete Fehler interessant, oder eher die Anzahl von Ereignissen?
+            </section>
+            <section data-markdown>
+                ## Deswegen empfehle ich einen für diesen Zweck dedizierten Service zu verwenden
 
-			theme: Reveal.getQueryHash().theme,
-			transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
-			dependencies: [
-				{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
-				{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-				{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
-				{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
-				{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
-				{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
-			]
-		});
+                Die haben schon die Expertise, diese Herausforderungen zu bekämpfen.
+            </section>
+            <section data-markdown>
+                ## Zusammenfassung
 
-		//window.addEventListener('mousewheel', handleScroll);
-		//window.addEventListener('DOMMouseScroll', handleScroll);
+                - Wir haben gesehen, wie man Fehler in JavaScript behandelt
+                - Wie man für Fehlerfälle sich vorbereiten kann
+                - Was man tun kann, um unerwartete Fehler auch mitzubekommen
+            </section>
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.min.js"></script>
+    <script>
+        // Full list of configuration options available here:
+        // https://github.com/hakimel/reveal.js#configuration
+        Reveal.initialize({
+            controls: true,
+            progress: true,
+            history: true,
+            center: true,
+            slideNumber: true,
+            mouseWheel: true,
 
-		function handleScroll(e) {
-			e.preventDefault();
-			var delta = e.detail || -e.wheelDelta;
+            width: 960,
+            height: 600,
 
-			if (delta < 0) { Reveal.prev(); }
-			else { Reveal.next(); }
-		}
-	</script>
+            theme: Reveal.getQueryHash().theme,
+            transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+            dependencies: [
+                { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+            ]
+        });
+
+        //window.addEventListener('mousewheel', handleScroll);
+        //window.addEventListener('DOMMouseScroll', handleScroll);
+
+        function handleScroll(e) {
+            e.preventDefault();
+            var delta = e.detail || -e.wheelDelta;
+
+            if (delta < 0) { Reveal.prev(); }
+            else { Reveal.next(); }
+        }
+    </script>
 </body>
 </html>
